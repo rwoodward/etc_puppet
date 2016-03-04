@@ -1,0 +1,22 @@
+{
+  "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "<%= @changeset_id %><%= Time.now.to_i %>",
+      "author": "cboyden",
+      "runInTransaction": "<%= @sql_transaction %>",
+      "changes": [
+        {
+          "sql": {
+            "comment": "Execute an externally defined SQL statement",
+            "dbms": "oracle, mysql, mssql, postgresql",
+            "endDelimiter": ";",
+            "splitStatements": <%= @split_statements %>,
+            "sql": "<%= @sqlstatement %>",
+            "stripComments": true
+          }
+        }]
+    }
+  }
+  ]
+}

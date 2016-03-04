@@ -1,0 +1,25 @@
+<Context path="/pentaho" docbase="webapps/pentaho/">
+  <Resource name="jdbc/Hibernate" auth="Container" type="javax.sql.DataSource"
+            factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="20" maxIdle="5"
+            maxWait="10000" username="<%= @db_hibernate_user %>" password="<%= @db_hibernate_password %>"
+            driverClassName="<%= @repository_db_jdbc_driver %>" url="<%= @repository_db_jdbc_url_prefix %><%= @hibernate_db %>"
+            validationQuery="<%= @repository_db_validation_query %>" />
+
+  <Resource name="jdbc/Audit" auth="Container" type="javax.sql.DataSource"
+            factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="20" maxIdle="5"
+            maxWait="10000" username="<%= @db_hibernate_user %>" password="<%= @db_hibernate_password %>"
+            driverClassName="<%= @repository_db_jdbc_driver %>" url="<%= @repository_db_jdbc_url_prefix %><%= @hibernate_db %>"
+            validationQuery="<%= @repository_db_validation_query %>" />
+
+  <Resource name="jdbc/Quartz" auth="Container" type="javax.sql.DataSource"
+            factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="20" maxIdle="5"
+            maxWait="10000" username="<%= @db_quartz_user %>" password="<%= @db_hibernate_password %>"
+            driverClassName="<%= @repository_db_jdbc_driver %>" url="<%= @repository_db_jdbc_url_prefix %><%= @quartz_db %>"
+            validationQuery="<%= @repository_db_validation_query %>"/>
+
+  <Resource name="jdbc/PDI_Operations_Mart" auth="Container" type="javax.sql.DataSource"
+            factory="org.apache.commons.dbcp.BasicDataSourceFactory" maxActive="20" maxIdle="5"
+            maxWait="10000" username="<%= @db_hibernate_user %>" password="<%= @db_hibernate_password %>"
+            driverClassName="<%= @repository_db_jdbc_driver %>" url="<%= @repository_db_jdbc_url_prefix %><%= @pentaho_operations_mart_db %>"
+            validationQuery="<%= @repository_db_validation_query %>"/>
+</Context>

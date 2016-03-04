@@ -1,0 +1,16 @@
+DROP DATABASE IF EXISTS `<%= @jackrabbit_db %>`;
+DROP DATABASE IF EXISTS `<%= @quartz_db %>`;
+DROP DATABASE IF EXISTS `<%= @hibernate_db %>`;
+DROP DATABASE IF EXISTS `<%= @pentaho_operations_mart_db %>`;
+
+CREATE DATABASE IF NOT EXISTS `<%= @jackrabbit_db %>` DEFAULT CHARACTER SET utf8;
+GRANT ALL ON <%= @jackrabbit_db %>.* TO '<%= @db_jackrabbit_user %>'@'%' IDENTIFIED BY '<%= @db_jackrabbit_password %>';
+
+CREATE DATABASE IF NOT EXISTS `<%= @quartz_db %>` DEFAULT CHARACTER SET utf8;
+GRANT ALL ON <%= @quartz_db %>.* TO '<%= @db_quartz_user %>'@'%' IDENTIFIED BY '<%= @db_quartz_password %>';
+
+CREATE DATABASE IF NOT EXISTS `<%= @hibernate_db %>` DEFAULT CHARACTER SET utf8;
+GRANT ALL ON <%= @hibernate_db %>.* TO '<%= @db_hibernate_user %>'@'%' identified by '<%= @db_hibernate_password %>';
+
+CREATE DATABASE IF NOT EXISTS `<%= @pentaho_operations_mart_db %>` DEFAULT CHARACTER SET utf8;
+GRANT ALL ON <%= @pentaho_operations_mart_db %>.* TO '<%= @db_hibernate_user %>'@'%';

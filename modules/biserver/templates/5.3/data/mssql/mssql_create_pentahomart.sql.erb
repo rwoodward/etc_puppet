@@ -1,0 +1,433 @@
+CREATE TABLE [dbo].[DIM_BATCH] (
+  [batch_tk] [BIGINT] NOT NULL,
+  [batch_id] [BIGINT] NULL,
+  [logchannel_id] [VARCHAR] (100) NULL,
+  [parent_logchannel_id] [VARCHAR] (100) NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_BATCH_BATCH_TK] ON [DIM_BATCH](batch_tk);
+CREATE INDEX [IDX_DIM_BATCH_LOOKUP] ON [DIM_BATCH](batch_id,logchannel_id,parent_logchannel_id);
+
+ALTER TABLE [dbo].[DIM_BATCH] WITH NOCHECK ADD CONSTRAINT [PK_DIM_BATCH] PRIMARY KEY CLUSTERED
+(
+[batch_tk]
+)  ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_DATE] (
+  [date_tk] [INT] NOT NULL,
+  [date_field] [DATETIME2] NULL,
+  [ymd] [VARCHAR] (10) NULL,
+  [ym] [VARCHAR] (7) NULL,
+  [year] [INT] NULL,
+  [quarter] [INT] NULL,
+  [quarter_code] [VARCHAR] (2) NULL,
+  [month] [INT] NULL,
+  [month_desc] [VARCHAR] (20) NULL,
+  [month_code] [VARCHAR] (3) NULL,
+  [day] [INT] NULL,
+  [day_of_year] [INT] NULL,
+  [day_of_week] [INT] NULL,
+  [day_of_week_desc] [VARCHAR] (20) NULL,
+  [day_of_week_code] [VARCHAR] (3) NULL,
+  [week] [INT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_DATE_DATE_TK] ON [DIM_DATE](date_tk);
+
+ALTER TABLE [dbo].[DIM_DATE] WITH NOCHECK ADD CONSTRAINT [PK_DIM_DATE] PRIMARY KEY CLUSTERED
+(
+[date_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_EXECUTION] (
+  [execution_tk] [BIGINT],
+  [execution_id] [VARCHAR] (100) NULL,
+  [server_host] [VARCHAR] (100) NULL,
+  [executing_user] [VARCHAR] (100) NULL,
+  [execution_status] [VARCHAR] (30) NULL,
+  [client] [VARCHAR] (255) NULL
+) ON [PRIMARY];
+CREATE INDEX [IDX_DIM_EXECUTION_EXECUTION_TK] ON [DIM_EXECUTION](execution_tk);
+CREATE INDEX [IDX_DIM_EXECUTION_LOOKUP] ON [DIM_EXECUTION](execution_id,server_host,executing_user,client);
+
+CREATE TABLE [dbo].[DIM_TIME] (
+  [time_tk] [INT] NOT NULL,
+  [hms] [VARCHAR] (8) NULL,
+  [hm] [VARCHAR] (5) NULL,
+  [ampm] [VARCHAR] (8) NULL,
+  [hour] [INT] NULL,
+  [hour12] [INT] NULL,
+  [minute] [INT] NULL,
+  [second] [INT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_TIME_TIME_TK] ON [DIM_TIME](time_tk);
+
+ALTER TABLE [dbo].[DIM_TIME] WITH NOCHECK ADD CONSTRAINT [PK_DIM_TIME] PRIMARY KEY CLUSTERED
+(
+[time_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_EXECUTOR] (
+  [executor_tk] [BIGINT] NOT NULL,
+  [version] [INT] NULL,
+  [date_from] [DATETIME2] NULL,
+  [date_to] [DATETIME2] NULL,
+  [executor_id] [VARCHAR] (255) NULL,
+  [executor_source] [VARCHAR] (255) NULL,
+  [executor_environment] [VARCHAR] (255) NULL,
+  [executor_type] [VARCHAR] (255) NULL,
+  [executor_name] [VARCHAR] (255) NULL,
+  [executor_desc] [VARCHAR] (255) NULL,
+  [executor_revision] [VARCHAR] (255) NULL,
+  [executor_version_label] [VARCHAR] (255) NULL,
+  [exec_enabled_table_logging] [CHAR] (1) NULL,
+  [exec_enabled_detailed_logging] [CHAR] (1) NULL,
+  [exec_enabled_perf_logging] [CHAR] (1) NULL,
+  [exec_enabled_history_logging] [CHAR] (1) NULL,
+  [last_updated_date] [DATETIME2] NULL,
+  [last_updated_user] [VARCHAR] (255) NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_EXECUTOR_EXECUTOR_TK] ON [DIM_EXECUTOR](executor_tk);
+CREATE INDEX [IDX_DIM_EXECUTOR_LOOKUP] ON [DIM_EXECUTOR](executor_id);
+
+ALTER TABLE [dbo].[DIM_EXECUTOR] WITH NOCHECK ADD CONSTRAINT [PK_DIM_EXECUTOR] PRIMARY KEY CLUSTERED
+(
+[executor_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_LOG_TABLE] (
+  [log_table_tk] [BIGINT] NOT NULL, 
+  [object_type] [VARCHAR] (30) NULL, 
+  [table_connection_name] [VARCHAR] (255) NULL, 
+  [table_name] [VARCHAR] (255) NULL,
+  [schema_name] [VARCHAR] (255) NULL,
+  [step_entry_table_conn_name] [VARCHAR] (255) NULL, 
+  [step_entry_table_name] [VARCHAR] (255) NULL,
+  [step_entry_schema_name] [VARCHAR] (255) NULL,
+  [perf_table_conn_name] [VARCHAR] (255) NULL,
+  [perf_table_name] [VARCHAR] (255) NULL,
+  [perf_schema_name] [VARCHAR] (255) NULL
+) ON [PRIMARY];
+
+CREATE UNIQUE INDEX [IDX_DIM_LOG_TABLE_PK] ON [DIM_LOG_TABLE](log_table_tk);
+CREATE INDEX [IDX_DIM_LOG_TABLE_LOOKUP]  ON [DIM_LOG_TABLE](object_type, table_connection_name, table_name, schema_name);
+CREATE INDEX [IDX_DIM_LOG_STEP_ENTRY_LOOKUP]  ON [DIM_LOG_TABLE](object_type, step_entry_table_conn_name, step_entry_table_name, step_entry_schema_name);
+CREATE INDEX [IDX_DIM_LOG_PERF_ENTRY_LOOKUP]  ON [DIM_LOG_TABLE](object_type, perf_table_conn_name, perf_table_name, perf_schema_name);
+
+ALTER TABLE [dbo].[DIM_LOG_TABLE] WITH NOCHECK ADD CONSTRAINT [PK_DIM_LOG_TABLE] PRIMARY KEY CLUSTERED
+(
+[log_table_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_STEP] (
+  [step_tk] [BIGINT] NOT NULL,
+  [step_id] [VARCHAR] (255) NULL,
+  [original_step_name] [VARCHAR] (255) NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_STEP_STEP_TK] ON [DIM_STEP](step_tk);
+CREATE INDEX [IDX_DIM_STEP_LOOKUP] ON [DIM_STEP](step_id);
+
+ALTER TABLE [dbo].[DIM_STEP] WITH NOCHECK ADD CONSTRAINT [PK_DIM_STEP] PRIMARY KEY CLUSTERED
+(
+[step_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[FACT_EXECUTION] (
+  [execution_date_tk] [INT] NULL,
+  [execution_time_tk] [INT] NULL,
+  [batch_tk] [BIGINT] NULL,
+  [execution_tk] [BIGINT] NULL,
+  [executor_tk] [BIGINT] NULL,
+  [parent_executor_tk] [BIGINT] NULL,
+  [root_executor_tk] [BIGINT] NULL,
+  [execution_timestamp] [DATETIME2] NULL,
+  [duration] [REAL] NULL,
+  [rows_input] [BIGINT] NULL,
+  [rows_output] [BIGINT] NULL,
+  [rows_read] [BIGINT] NULL,
+  [rows_written] [BIGINT] NULL,
+  [rows_rejected] [BIGINT] NULL,
+  [errors] [BIGINT] NULL,
+  [failed] [SMALLINT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_EXECUTION_EXECUTION_DATE_TK] ON [FACT_EXECUTION](execution_date_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_EXECUTION_TIME_TK] ON [FACT_EXECUTION](execution_time_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_BATCH_TK] ON [FACT_EXECUTION](batch_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_EXECUTION_TK] ON [FACT_EXECUTION](execution_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_EXECUTOR_TK] ON [FACT_EXECUTION](executor_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_PARENT_EXECUTOR_TK] ON [FACT_EXECUTION](parent_executor_tk);
+CREATE INDEX [IDX_FACT_EXECUTION_ROOT_EXECUTOR_TK] ON [FACT_EXECUTION](root_executor_tk);
+
+CREATE TABLE [dbo].[FACT_STEP_EXECUTION] (
+  [execution_date_tk] [INT] NULL,
+  [execution_time_tk] [INT] NULL,
+  [batch_tk] [BIGINT] NULL,
+  [executor_tk] [BIGINT] NULL,
+  [parent_executor_tk] [BIGINT] NULL,
+  [root_executor_tk] [BIGINT] NULL,
+  [step_tk] [BIGINT] NULL,
+  [step_copy] [INT] NULL,
+  [execution_timestamp] [DATETIME2] NULL,
+  [rows_input] [BIGINT] NULL,
+  [rows_output] [BIGINT] NULL,
+  [rows_read] [BIGINT] NULL,
+  [rows_written] [BIGINT] NULL,
+  [rows_rejected] [BIGINT] NULL,
+  [errors] [BIGINT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_EXECUTION_DATE_TK] ON [FACT_STEP_EXECUTION](execution_date_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_EXECUTION_TIME_TK] ON [FACT_STEP_EXECUTION](execution_time_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_BATCH_TK] ON [FACT_STEP_EXECUTION](batch_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_EXECUTOR_TK] ON [FACT_STEP_EXECUTION](executor_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_PARENT_EXECUTOR_TK] ON [FACT_STEP_EXECUTION](parent_executor_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_ROOT_EXECUTOR_TK] ON [FACT_STEP_EXECUTION](root_executor_tk);
+CREATE INDEX [IDX_FACT_STEP_EXECUTION_STEP_TK] ON [FACT_STEP_EXECUTION](step_tk);
+
+CREATE TABLE [dbo].[FACT_JOBENTRY_EXECUTION] (
+  execution_date_tk [INT] NULL,
+  execution_time_tk [INT] NULL,
+  batch_tk [BIGINT] NULL,
+  executor_tk [BIGINT] NULL,
+  parent_executor_tk [BIGINT] NULL,
+  root_executor_tk [BIGINT] NULL,
+  step_tk [BIGINT] NULL,
+  execution_timestamp [DATETIME2] NULL,
+  rows_input [BIGINT] NULL,
+  rows_output [BIGINT] NULL,
+  rows_read [BIGINT] NULL,
+  rows_written [BIGINT] NULL,
+  rows_rejected [BIGINT] NULL,
+  errors [BIGINT] NULL,
+  result [CHAR] (1) NULL,
+  nr_result_rows [BIGINT] NULL,
+  nr_result_files [BIGINT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_EXECUTION_DATE_TK] ON [FACT_JOBENTRY_EXECUTION](execution_date_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_EXECUTION_TIME_TK] ON [FACT_JOBENTRY_EXECUTION](execution_time_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_BATCH_TK] ON [FACT_JOBENTRY_EXECUTION](batch_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_EXECUTOR_TK] ON [FACT_JOBENTRY_EXECUTION](executor_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_PARENT_EXECUTOR_TK] ON [FACT_JOBENTRY_EXECUTION](parent_executor_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_ROOT_EXECUTOR_TK] ON [FACT_JOBENTRY_EXECUTION](root_executor_tk);
+CREATE INDEX [IDX_FACT_JOBENTRY_EXECUTION_STEP_TK] ON [FACT_JOBENTRY_EXECUTION](step_tk);
+
+CREATE TABLE [dbo].[FACT_PERF_EXECUTION] (
+  execution_date_tk [INT] NULL,
+  execution_time_tk [INT] NULL,
+  batch_tk [BIGINT] NULL,
+  executor_tk [BIGINT] NULL,
+  parent_executor_tk [BIGINT] NULL,
+  root_executor_tk [BIGINT] NULL,
+  step_tk [BIGINT] NULL,
+  seq_nr [BIGINT] NULL,
+  step_copy [BIGINT] NULL,
+  execution_timestamp [DATETIME2] NULL,
+  rows_input [BIGINT] NULL,
+  rows_output [BIGINT] NULL,
+  rows_read [BIGINT] NULL,
+  rows_written [BIGINT] NULL,
+  rows_rejected [BIGINT] NULL,
+  errors [BIGINT] NULL,
+  input_buffer_rows [BIGINT] NULL,
+  output_buffer_rows [BIGINT] NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_EXECUTION_DATE_TK] ON [FACT_PERF_EXECUTION](execution_date_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_EXECUTION_TIME_TK] ON [FACT_PERF_EXECUTION](execution_time_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_BATCH_TK] ON [FACT_PERF_EXECUTION](batch_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_EXECUTOR_TK] ON [FACT_PERF_EXECUTION](executor_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_PARENT_EXECUTOR_TK] ON [FACT_PERF_EXECUTION](parent_executor_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_ROOT_EXECUTOR_TK] ON [FACT_PERF_EXECUTION](root_executor_tk);
+CREATE INDEX [IDX_FACT_PERF_EXECUTION_STEP_TK] ON [FACT_PERF_EXECUTION](step_tk);
+
+CREATE TABLE [dbo].[DIM_STATE] (
+  state_tk [BIGINT] NOT NULL,
+  state [VARCHAR] (100) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_STATE_STATE_TK] ON [DIM_STATE](state_tk);
+
+ALTER TABLE [dbo].[DIM_STATE] WITH NOCHECK ADD CONSTRAINT [PK_DIM_STATE] PRIMARY KEY CLUSTERED
+(
+[state_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_SESSION] (
+  session_tk [BIGINT] NOT NULL,
+  session_id [VARCHAR] (200) NOT NULL,
+  session_type [VARCHAR] (200) NOT NULL,
+  username [VARCHAR] (200) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_SESSION_SESSION_TK] ON [DIM_SESSION](session_tk);
+
+ALTER TABLE [dbo].[DIM_SESSION] WITH NOCHECK ADD CONSTRAINT [PK_DIM_SESSION] PRIMARY KEY CLUSTERED
+(
+[session_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_INSTANCE] (
+  instance_tk [BIGINT] NOT NULL,
+  instance_id [VARCHAR] (200) NOT NULL,
+  engine_id [VARCHAR] (200) NOT NULL,
+  service_id [VARCHAR] (200) NOT NULL,
+  content_id [VARCHAR] (200) NOT NULL,
+  content_detail [VARCHAR] (1024)
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_INSTANCE_INSTANCE_TK] ON [DIM_INSTANCE](instance_tk);
+
+ALTER TABLE [dbo].[DIM_INSTANCE] WITH NOCHECK ADD CONSTRAINT [PK_DIM_INSTANCE] PRIMARY KEY CLUSTERED
+(
+[instance_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_COMPONENT] (
+  component_tk [BIGINT] NOT NULL,
+  component_id [VARCHAR] (200) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_COMPONENT_COMPONENT_TK] ON [DIM_COMPONENT](component_tk);
+
+ALTER TABLE [dbo].[DIM_COMPONENT] WITH NOCHECK ADD CONSTRAINT [PK_DIM_COMPONENT] PRIMARY KEY CLUSTERED
+(
+[component_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[STG_CONTENT_ITEM] (
+  [gid] [CHAR] (36) NOT NULL,
+  [parent_gid] [CHAR] (36) NULL,
+  [fileSize] [INT] NOT NULL,
+  [locale] [VARCHAR] (5) NULL,
+  [name] [VARCHAR] (200) NOT NULL,
+  [ownerType] [INT] NOT NULL,
+  [path] [VARCHAR] (1024) NOT NULL,
+  [title] [VARCHAR] (255) NULL,
+  [is_folder] [CHAR] (1) NOT NULL,
+  [is_hidden] [CHAR] (1) NOT NULL,
+  [is_locked] [CHAR] (1) NOT NULL,
+  [is_versioned] [CHAR] (1) NOT NULL,
+  [date_created] [DATETIME2] NULL,
+  [date_last_modified] [DATETIME2] NULL,
+  [is_processed] [CHAR] (1) NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_STG_CONTENT_ITEM_GID] ON [STG_CONTENT_ITEM](gid);
+
+ALTER TABLE [dbo].[STG_CONTENT_ITEM] WITH NOCHECK ADD CONSTRAINT [PK_STG_CONTENT_ITEM] PRIMARY KEY CLUSTERED
+(
+[gid]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[DIM_CONTENT_ITEM] (
+  [content_item_tk] [INT] NOT NULL,
+  [content_item_title] [VARCHAR] (255) NOT NULL DEFAULT 'NA',
+  [content_item_locale] [VARCHAR] (255) NOT NULL DEFAULT 'NA',
+  [content_item_size] [INT] NULL DEFAULT 0,
+  [content_item_path] [VARCHAR] (1024) NULL DEFAULT 'NA',
+  [content_item_name] [VARCHAR] (255) NOT NULL DEFAULT 'NA',
+  [content_item_fullname] [VARCHAR] (1024) NOT NULL DEFAULT 'NA',
+  [content_item_type] [VARCHAR] (32) NOT NULL DEFAULT 'NA',
+  [content_item_extension] [VARCHAR] (32) NULL DEFAULT 'NA',
+  [content_item_guid] [CHAR] (36) NOT NULL DEFAULT 'NA',
+  [parent_content_item_guid] [CHAR] (36) NULL DEFAULT 'NA',
+  [parent_content_item_tk] [INT] NULL,
+  [content_item_modified] [DATETIME2] NOT NULL DEFAULT '1900-01-01 00:00:00',
+  [content_item_valid_from] [DATETIME2] NOT NULL DEFAULT '1900-01-01 00:00:00',
+  [content_item_valid_to] [DATETIME2] NOT NULL DEFAULT '9999-12-31 23:59:59',
+  [content_item_state] [VARCHAR] (16) NULL DEFAULT 'new',
+  [content_item_version] [INT] NOT NULL DEFAULT 0
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_DIM_CONTENT_ITEM_CONTENT_ITEM_TK] ON [DIM_CONTENT_ITEM](content_item_tk);
+CREATE INDEX [IDX_DIM_CONTENT_ITEM_GUID_FROM] ON [DIM_CONTENT_ITEM](content_item_guid, content_item_valid_from);
+
+ALTER TABLE [dbo].[DIM_CONTENT_ITEM] WITH NOCHECK ADD CONSTRAINT [PK_DIM_CONTENT_ITEM] PRIMARY KEY CLUSTERED
+(
+[content_item_tk]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[FACT_SESSION] (
+  [start_date_tk] [INT] NOT NULL,
+  [start_time_tk] [INT] NOT NULL,
+  [end_date_tk] [INT] NOT NULL,
+  [end_time_tk] [INT] NOT NULL,
+  [session_tk] [BIGINT] NOT NULL,
+  [state_tk] [BIGINT] NOT NULL,
+  [duration] [NUMERIC] (19,3) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_PERF_SESSION_START_DATE_TK] ON [FACT_SESSION](start_date_tk);
+CREATE INDEX [IDX_FACT_PERF_SESSION_START_TIME_TK] ON [FACT_SESSION](start_time_tk);
+CREATE INDEX [IDX_FACT_PERF_SESSION_END_DATE_TK] ON [FACT_SESSION](end_date_tk);
+CREATE INDEX [IDX_FACT_PERF_SESSION_END_TIME_TK] ON [FACT_SESSION](end_time_tk);
+CREATE INDEX [IDX_FACT_PERF_SESSION_SESSION_TK] ON [FACT_SESSION](session_tk);
+CREATE INDEX [IDX_FACT_PERF_SESSION_STATE_TK] ON [FACT_SESSION](state_tk);
+
+CREATE TABLE [dbo].[FACT_INSTANCE] (
+  [start_date_tk] [INT] NOT NULL,
+  [start_time_tk] [INT] NOT NULL,
+  [end_date_tk] [INT] NOT NULL,
+  [end_time_tk] [INT] NOT NULL,
+  [session_tk] [BIGINT] NOT NULL,
+  [instance_tk] [BIGINT] NOT NULL,
+  [state_tk] [BIGINT] NOT NULL,
+  [duration] [NUMERIC] (19,3) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_START_DATE_TK] ON [FACT_INSTANCE](start_date_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_START_TIME_TK] ON [FACT_INSTANCE](start_time_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_END_DATE_TK] ON [FACT_INSTANCE](end_date_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_END_TIME_TK] ON [FACT_INSTANCE](end_time_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_SESSION_TK] ON [FACT_INSTANCE](session_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_INSTANCE_TK] ON [FACT_INSTANCE](instance_tk);
+CREATE INDEX [IDX_FACT_PERF_INSTANCE_STATE_TK] ON [FACT_INSTANCE](state_tk);
+
+CREATE TABLE [dbo].[FACT_COMPONENT] (
+  [start_date_tk] [INT] NOT NULL,
+  [start_time_tk] [INT] NOT NULL,
+  [end_date_tk] [INT] NOT NULL,
+  [end_time_tk] [INT] NOT NULL,
+  [session_tk] [BIGINT] NOT NULL,
+  [instance_tk] [BIGINT] NOT NULL,
+  [state_tk] [BIGINT] NOT NULL,
+  [component_tk] [BIGINT] NOT NULL,
+  [duration] [NUMERIC] (19,3) NOT NULL
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_START_DATE_TK] ON [FACT_COMPONENT](start_date_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_START_TIME_TK] ON [FACT_COMPONENT](start_time_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_END_DATE_TK] ON [FACT_COMPONENT](end_date_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_END_TIME_TK] ON [FACT_COMPONENT](end_time_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_SESSION_TK] ON [FACT_COMPONENT](session_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_INSTANCE_TK] ON [FACT_COMPONENT](instance_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_COMPONENT_TK] ON [FACT_COMPONENT](component_tk);
+CREATE INDEX [IDX_FACT_PERF_COMPONENT_STATE_TK] ON [FACT_COMPONENT](state_tk);
+
+CREATE TABLE [dbo].[PRO_AUDIT_STAGING] (
+   [job_id] [VARCHAR] (200),
+   [inst_id] [VARCHAR] (200),
+   [obj_id] [VARCHAR] (200),
+   [obj_type] [VARCHAR] (200),
+   [actor] [VARCHAR] (200),
+   [message_type] [VARCHAR] (200),
+   [message_name] [VARCHAR] (200),
+   [message_text_value] [VARCHAR] (1024),
+   [message_num_value] [NUMERIC] (19),
+   [duration] [NUMERIC] (19, 3),
+   [audit_time] [DATETIME2]
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_PRO_AUDIT_STAGING_MESSAGE_TYPE] ON [PRO_AUDIT_STAGING](message_type);
+
+CREATE TABLE [dbo].[PRO_AUDIT_TRACKER] (
+   [audit_time] [DATETIME2]
+) ON [PRIMARY];
+
+CREATE INDEX [IDX_PRO_AUDIT_TRACKER_AUDIT_TIME] ON [PRO_AUDIT_STAGING](audit_time);
+INSERT INTO [dbo].[PRO_AUDIT_TRACKER] values ('1900-01-01');

@@ -1,0 +1,20 @@
+DROP DATABASE IF EXISTS <%= @jackrabbit_db %>;
+DROP DATABASE IF EXISTS <%= @quartz_db %>;
+DROP DATABASE IF EXISTS <%= @hibernate_db %>;
+
+DROP USER IF EXISTS <%= @db_jackrabbit_user %>;
+DROP USER IF EXISTS <%= @db_quartz_user %>;
+DROP USER IF EXISTS <%= @db_hibernate_user %>;
+
+CREATE USER <%= @db_jackrabbit_user %> PASSWORD '<%= @db_jackrabbit_password %>';
+CREATE USER <%= @db_quartz_user %> PASSWORD '<%= @db_quartz_password %>';
+CREATE USER <%= @db_hibernate_user %> PASSWORD '<%= @db_hibernate_password %>';
+
+CREATE DATABASE <%= @jackrabbit_db %> WITH OWNER = <%= @db_jackrabbit_user %> ENCODING = 'UTF8' TABLESPACE = pg_default;
+GRANT ALL PRIVILEGES ON DATABASE <%= @jackrabbit_db %> TO <%= @db_jackrabbit_user %>;
+
+CREATE DATABASE <%= @quartz_db %> WITH OWNER = <%= @db_quartz_user %>  ENCODING = 'UTF8' TABLESPACE = pg_default;
+GRANT ALL PRIVILEGES ON DATABASE <%= @quartz_db %> TO <%= @db_quartz_user %>;
+
+CREATE DATABASE <%= @hibernate_db %> WITH OWNER = <%= @db_hibernate_user %> ENCODING = 'UTF8' TABLESPACE = pg_default;
+GRANT ALL PRIVILEGES ON DATABASE <%= @hibernate_db %> TO <%= @db_hibernate_user %>;

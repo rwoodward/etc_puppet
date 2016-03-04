@@ -1,0 +1,27 @@
+IF EXISTS(select * from sys.databases where name='<%= @jackrabbit_db %>')
+  BEGIN
+    ALTER DATABASE [<%= @jackrabbit_db %>] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE <%= @jackrabbit_db %>;
+  END
+CREATE DATABASE [<%= @jackrabbit_db %>];
+
+IF EXISTS(select * from sys.databases where name='<%= @quartz_db %>')
+  BEGIN
+    ALTER DATABASE [<%= @quartz_db %>] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE <%= @quartz_db %>;
+  END
+CREATE DATABASE [<%= @quartz_db %>];
+
+IF EXISTS(select * from sys.databases where name='<%= @hibernate_db %>')
+  BEGIN
+    ALTER DATABASE [<%= @hibernate_db %>] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE <%= @hibernate_db %>;
+  END
+CREATE DATABASE [<%= @hibernate_db %>];
+
+IF EXISTS(select * from sys.databases where name='<%= @pentaho_operations_mart_db %>')
+  BEGIN
+    ALTER DATABASE [<%= @pentaho_operations_mart_db %>] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE <%= @pentaho_operations_mart_db %>;
+  END
+CREATE DATABASE [<%= @pentaho_operations_mart_db %>];

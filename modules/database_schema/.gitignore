@@ -1,0 +1,6 @@
+.vagrant
+.project
+files/jdbc-drivers/mysql-connector-java-5.1.33.jar
+files/jdbc-drivers/postgresql-9.3-1102.jdbc4.jar
+files/jdbc-drivers/ojdbc6.jar
+files/jdbc-drivers/sqljdbc4.jar

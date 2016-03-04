@@ -1,0 +1,63 @@
+DECLARE
+  v_count INTEGER := 0;
+BEGIN
+
+SELECT COUNT(1) INTO v_count FROM dba_tablespaces WHERE TABLESPACE_NAME = UPPER('pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %>');
+
+IF v_count = 0
+THEN
+  EXECUTE IMMEDIATE ('CREATE TABLESPACE pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %>
+    LOGGING
+    DATAFILE ''ptho_ts_<%= scope['biserver::repository_db_shared_suffix'] %>.dbf''
+    SIZE 32m
+    AUTOEXTEND on
+    NEXT 32m MAXSIZE 2048m
+    EXTENT MANAGEMENT LOCAL');
+END IF;
+
+v_count := 0;
+SELECT COUNT(1) INTO v_count FROM DBA_USERS WHERE USERNAME = UPPER('<%= @db_jackrabbit_user %>');
+IF v_count != 0
+THEN
+  EXECUTE IMMEDIATE ('DROP USER <%= @db_jackrabbit_user %> CASCADE');
+END IF;
+
+v_count := 0;
+SELECT COUNT(1) INTO v_count FROM DBA_USERS WHERE USERNAME = UPPER('<%= @db_quartz_user %>');
+IF v_count != 0
+THEN
+  EXECUTE IMMEDIATE ('DROP USER <%= @db_quartz_user %> CASCADE');
+END IF;
+
+v_count := 0;
+SELECT COUNT(1) INTO v_count FROM DBA_USERS WHERE USERNAME = UPPER('<%= @db_hibernate_user %>');
+IF v_count != 0
+THEN
+  EXECUTE IMMEDIATE ('DROP USER <%= @db_hibernate_user %> CASCADE');
+END IF;
+
+v_count := 0;
+SELECT COUNT(1) INTO v_count FROM DBA_USERS WHERE USERNAME = UPPER('<%= @db_pentahomart_user %>');
+IF v_count != 0
+THEN
+  EXECUTE IMMEDIATE ('DROP USER <%= @db_pentahomart_user %> CASCADE');
+END IF;
+
+
+EXECUTE IMMEDIATE ('CREATE USER <%= @db_jackrabbit_user %> IDENTIFIED BY <%= @db_jackrabbit_password %> DEFAULT TABLESPACE pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> QUOTA UNLIMITED ON pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> TEMPORARY TABLESPACE temp QUOTA 5M ON system');
+EXECUTE IMMEDIATE ('CREATE USER <%= @db_quartz_user %> IDENTIFIED BY <%= @db_quartz_password %> DEFAULT TABLESPACE pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> QUOTA UNLIMITED ON pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> TEMPORARY TABLESPACE temp QUOTA 5M ON system');
+EXECUTE IMMEDIATE ('CREATE USER <%= @db_hibernate_user %> IDENTIFIED BY <%= @db_hibernate_password %> DEFAULT TABLESPACE pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> QUOTA UNLIMITED ON pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> TEMPORARY TABLESPACE temp QUOTA 5M ON system');
+
+EXECUTE IMMEDIATE ('GRANT CREATE SESSION, CREATE PROCEDURE, CREATE TABLE, CREATE TRIGGER, CREATE SEQUENCE TO <%= @db_jackrabbit_user %>');
+EXECUTE IMMEDIATE ('GRANT CREATE SESSION, CREATE PROCEDURE, CREATE TABLE, CREATE TRIGGER, CREATE SEQUENCE TO <%= @db_quartz_user %>');
+EXECUTE IMMEDIATE ('GRANT CREATE SESSION, CREATE PROCEDURE, CREATE TABLE, CREATE TRIGGER, CREATE SEQUENCE TO <%= @db_hibernate_user %>');
+
+v_count := 0;
+SELECT COUNT(1) INTO v_count FROM DBA_USERS WHERE USERNAME = UPPER('<%= @db_pentahomart_user %>');
+IF v_count = 0
+THEN
+  EXECUTE IMMEDIATE ('CREATE USER <%= @db_pentahomart_user %> IDENTIFIED BY <%= @db_pentahomart_password %> DEFAULT TABLESPACE pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> QUOTA UNLIMITED ON pentaho_tablespace_<%= scope['biserver::repository_db_shared_suffix'] %> TEMPORARY TABLESPACE temp QUOTA 5M ON system');
+  EXECUTE IMMEDIATE ('GRANT CREATE SESSION, CREATE PROCEDURE, CREATE TABLE, CREATE TRIGGER, CREATE SEQUENCE TO <%= @db_pentahomart_user %>');
+END IF;
+
+END;

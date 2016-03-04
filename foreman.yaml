@@ -1,0 +1,12 @@
+---
+:url: "https://foreman.pentaho.com"
+:ssl_ca: "/var/lib/puppet/ssl/certs/ca.pem"
+:ssl_cert: "/var/lib/puppet/ssl/certs/foreman.pentaho.com.pem"
+:ssl_key: "/var/lib/puppet/ssl/private_keys/foreman.pentaho.com.pem"
+:user: ""
+:password: ""
+:puppetdir: "/var/lib/puppet"
+:puppetuser: "puppet"
+:facts: true
+:timeout: 60
+:threads: null

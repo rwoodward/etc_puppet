@@ -1,0 +1,15 @@
+{
+  "author": "Bob Woodward",
+  "license": "GPL",
+  "name": "rwoodward-Java",
+  "operatingsystem_support": [],
+  "project_page": "",
+  "requirements": [],
+  "source": "mydesktop",
+  "summary": "downlaods and installs the referenced Java environments",
+  "tags": [],
+  "version": "0.1.0",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">=4.0.1"}
+    ]
+  }

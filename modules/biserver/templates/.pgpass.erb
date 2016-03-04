@@ -1,0 +1,5 @@
+# hostname:port:database:username:password
+*:*:*:<%= scope['biserver::repository_db_user'] %>:<%= scope['biserver::repository_db_password'] %>
+*:*:*:<%= @db_hibernate_user %>:<%= @db_hibernate_password %>
+*:*:*:<%= @db_quartz_user %>:<%= @db_quartz_password %>
+*:*:*:<%= @db_jackrabbit_user %>:<%= @db_jackrabbit_password %>
