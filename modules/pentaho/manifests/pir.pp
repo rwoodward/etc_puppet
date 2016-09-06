@@ -63,7 +63,7 @@ class pentaho::pir::install (
     path => ["$java::java_directory/bin"],
     require => [ Staging::Extract["$pentaho::source_pir_file"],
 	             File["$installer_dir/automated_install.xml"] ],
-    subscribe => File["$root_dir/biserver_ee_dir/pentaho-solutions/system"]
+    subscribe => File["$root_dir/$biserver_ee_dir/pentaho-solutions/system"]
   }
 }
 
