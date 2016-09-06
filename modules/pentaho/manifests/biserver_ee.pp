@@ -40,8 +40,9 @@ class pentaho::biserver_ee (
 # all versions of jars in the WEB-INF/lib and anywhere else
 class pentaho::biserver_ee::delete_old {
   if ($::kernel == 'windows') {
-    exec { "powershell.exe -Command \"Remove-Item -Recurse -Force $pentaho::root_dir\\biserver-ee\"":
-      path => "C:/Windows/System32/WindowsPowerShell/v1.0"
+    exec { "powershell.exe -Command \"Remove-Item -ErrorAction SilentlyContinue -Recurse -Force $pentaho::root_dir\\biserver-ee\"":
+      path => "C:/Windows/System32/WindowsPowerShell/v1.0",
+      returns => [0,1]
     }
   } else {
     exec { "rm -rf $pentaho::root_dir/biserver-ee":
