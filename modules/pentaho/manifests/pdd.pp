@@ -39,13 +39,14 @@ class pentaho::pdd::download (
 # Execute the -dist installer to extract the plugin
 class pentaho::pdd::install (
   $installer_dir = "$pentaho::installer_root_dir/pdd-plugin",
-  $biserver_ee_dir   = "$pentaho::root_dir/biserver-ee" 
+  $root_dir = "$pentaho::root_dir",
+  $biserver_ee_dir   = "$pentaho::biserver_ee_dir"
 ) {
   $automated_install_file_content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
 <AutomatedInstallation langpack=\"eng\">
   <com.pentaho.engops.eula.izpack.PentahoHTMLLicencePanel id=\"licensepanel\"/>
   <com.izforge.izpack.panels.target.TargetPanel id=\"targetpanel\">
-  <installpath>$biserver_ee_dir/pentaho-solutions/system</installpath>
+  <installpath>$root_dir/$biserver_ee_dir/pentaho-solutions/system</installpath>
   </com.izforge.izpack.panels.target.TargetPanel>
   <com.izforge.izpack.panels.install.InstallPanel id=\"installpanel\"/>
 </AutomatedInstallation>"
@@ -62,7 +63,7 @@ class pentaho::pdd::install (
     path => ["$java::java_directory/bin"],
     require => [ Staging::Extract["$pentaho::source_pdd_file"],
 	             File["$installer_dir/automated_install.xml"] ],
-    subscribe => File["$biserver_ee_dir/pentaho-solutions/system"]
+    subscribe => File["$root_dir/$biserver_ee_dir/pentaho-solutions/system"]
   }
 }
 

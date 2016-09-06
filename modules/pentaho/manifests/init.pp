@@ -19,6 +19,7 @@ class pentaho (
   $installer_root_dir           = "$pentaho::params::root_dir/installers",
   $suite_version                = "$pentaho::params::suite_version",
   $root_dir                     = "$pentaho::params::root_dir",
+  $biserver_ee_dir              = "$pentaho::params::biserver_ee_dir",
   $license_installer_path       = "$pentaho::params::license_installer_path",
   $license_files_path           = "$pentaho::params::license_files_path",
   $source_host                  = "$pentaho::params::source_host",

@@ -28,7 +28,7 @@ explicitly covering such access.
 
 	<context-param>
 		<param-name>solution-path</param-name>
-		<param-value><%= scope['pentaho::root_dir'] %>/biserver-ee/pentaho-solutions</param-value>
+		<param-value><%= scope['pentaho::root_dir'] %>/<%= scope['pentaho::biserver_ee_dir'] %>/pentaho-solutions</param-value>
 	</context-param>
 
 	<!--
@@ -106,7 +106,7 @@ explicitly covering such access.
     <!-- [BEGIN HSQLDB DATABASES] -->
     <context-param>
         <param-name>hsqldb-databases</param-name>
-        <param-value>sampledata@<%= scope['pentaho::root_dir'] %>/biserver-ee/data/hsqldb/sampledata</param-value>
+        <param-value>sampledata@<%= scope['pentaho::root_dir'] %>/<%= scope['pentaho::biserver_ee_dir'] %>/data/hsqldb/sampledata</param-value>
     </context-param>
     <!-- [END HSQLDB DATABASES] -->
     

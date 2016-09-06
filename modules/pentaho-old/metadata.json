@@ -1,0 +1,17 @@
+{
+  "author": "Bob Woodward",
+  "license": "GPL",
+  "name": "rwoodward-pentahobainstaller",
+  "operatingsystem_support": [],
+  "project_page": "",
+  "requirements": [],
+  "source": "mydesktop",
+  "summary": "downlaods and installs the latest baserver binary",
+  "tags": [],
+  "version": "0.1.0",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">=4.0.1"},
+    {"name":"pentaho/java","version_requirement":">=0.0.0"},
+    {"name":"maestrodev/wget","version_requirement":">=1.0.1"}
+    ]
+  }

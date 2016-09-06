@@ -1,14 +1,13 @@
 # Class to install BI Server EE product
 class pentaho::biserver_ee (
 ) {
+  class {"pentaho::biserver_ee::download": }
+
   class {"pentaho::biserver_ee::delete_old": }
-
-  class {"pentaho::biserver_ee::download":
-    require => Class["pentaho::biserver_ee::delete_old"]
-  }
-
+  
   class {"pentaho::biserver_ee::install":
-    require => Class["pentaho::biserver_ee::download"]
+    subscribe => [ Class["pentaho::biserver_ee::download"],
+                   Class["pentaho::biserver_ee::delete_old"] ]
   }
   
   class {"pentaho::biserver_ee::cleanup":
@@ -28,7 +27,7 @@ class pentaho::biserver_ee (
     require => Class["pentaho::biserver_ee::install"]
   }
   
-  file {"$pentaho::root_dir/biserver-ee/pentaho-solutions/system":
+  file {"$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system":
     ensure => directory,
     require => Class["pentaho::biserver_ee::install"]
   }
@@ -40,12 +39,12 @@ class pentaho::biserver_ee (
 # all versions of jars in the WEB-INF/lib and anywhere else
 class pentaho::biserver_ee::delete_old {
   if ($::kernel == 'windows') {
-    exec { "powershell.exe -Command \"Remove-Item -ErrorAction SilentlyContinue -Recurse -Force $pentaho::root_dir\\biserver-ee\"":
+    exec { "powershell.exe -Command \"Remove-Item -ErrorAction SilentlyContinue -Recurse -Force $pentaho::root_dir\\$pentaho::biserver_ee_dir\"":
       path => "C:/Windows/System32/WindowsPowerShell/v1.0",
       returns => [0,1]
     }
   } else {
-    exec { "rm -rf $pentaho::root_dir/biserver-ee":
+    exec { "rm -rf $pentaho::root_dir/$pentaho::biserver_ee_dir":
       path => "/bin:/usr/bin"
     }
   }
@@ -59,21 +58,21 @@ class pentaho::biserver_ee::download (
     source => "$pentaho::source_host/$pentaho::source_path/$pentaho::source_biserver_file"
   }
   
-  file { ["$installer_root_dir/biserver-ee"]:
+  file { ["$installer_root_dir/$pentaho::biserver_ee_dir"]:
     ensure => directory
   }
   
   staging::extract { $pentaho::source_biserver_file:
-    target => "$installer_root_dir/biserver-ee",
+    target => "$installer_root_dir/$pentaho::biserver_ee_dir",
     flatten => true,
-    require => File["$installer_root_dir/biserver-ee"],
+    require => File["$installer_root_dir/$pentaho::biserver_ee_dir"],
     subscribe => Staging::File["$pentaho::source_biserver_file"]
   }
 }
 
 # Execute the -dist installer to extract the BI Server EE
 class pentaho::biserver_ee::install (
-  $installer_dir = "$pentaho::installer_root_dir/biserver-ee",
+  $installer_dir = "$pentaho::installer_root_dir/$pentaho::biserver_ee_dir",
   $install_dir   = "$pentaho::root_dir" 
 ) {
   $automated_install_file_content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>
@@ -103,7 +102,7 @@ class pentaho::biserver_ee::install (
 
 # Remove the installer files
 class pentaho::biserver_ee::cleanup (
-  $installer_dir = "$pentaho::installer_root_dir/biserver-ee"
+  $installer_dir = "$pentaho::installer_root_dir/$pentaho::biserver_ee_dir"
 ) {
   if ($::kernel == 'windows') {
     exec { "powershell.exe -Command \"Remove-Item -Recurse -Force $installer_dir\"":
@@ -130,11 +129,11 @@ class pentaho::biserver_ee::configure {
 # Configuration steps for the default (Tomcat 6) distributable package
 class pentaho::biserver_ee::configure_default {
   # Remove the user prompt from initial startup of BI Server
-  file { ["$pentaho::root_dir/biserver-ee/promptuser.sh", "$pentaho::root_dir/biserver-ee/promptuser.js"]:
+  file { ["$pentaho::root_dir/$pentaho::biserver_ee_dir/promptuser.sh", "$pentaho::root_dir/$pentaho::biserver_ee_dir/promptuser.js"]:
     ensure => absent
   }
   
-  file { "$pentaho::root_dir/biserver-ee/tomcat/webapps/pentaho/WEB-INF/web.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/tomcat/webapps/pentaho/WEB-INF/web.xml":
     ensure => "file",
     content => template("pentaho/5.3/tomcat6/webapps/pentaho/WEB-INF/web.xml.erb")
   }
@@ -143,13 +142,13 @@ class pentaho::biserver_ee::configure_default {
   $PENTAHO_JDK_HOME = $java::java_directory
   
   if ($::kernel == 'windows') {
-    file { ["$pentaho::root_dir/biserver-ee/set-pentaho-env.bat",
+    file { ["$pentaho::root_dir/$pentaho::biserver_ee_dir/set-pentaho-env.bat",
             "$pentaho::root_dir/license-installer/set-pentaho-env.bat" ]:
       ensure => "file",
       content => template("pentaho/5.3/set-pentaho-env.bat.erb")
     }
   } else {
-    file { ["$pentaho::root_dir/biserver-ee/set-pentaho-env.sh",
+    file { ["$pentaho::root_dir/$pentaho::biserver_ee_dir/set-pentaho-env.sh",
             "$pentaho::root_dir/license-installer/set-pentaho-env.sh" ]:
       ensure => "file",
       content => template("pentaho/5.3/set-pentaho-env.sh.erb")
@@ -157,7 +156,7 @@ class pentaho::biserver_ee::configure_default {
   }
   
   #Copy JDBC drivers to tomcat/lib
-  file { "$pentaho::root_dir/biserver-ee/tomcat/lib":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/tomcat/lib":
     ensure => directory,
     recurse => true,
     source => "puppet:///modules/pentaho/jdbc",
@@ -304,37 +303,37 @@ class pentaho::biserver_ee::create_repository {
   }
   
   # Need a directory to import the DB specific sql templates
-  file { "$pentaho::root_dir/biserver-ee/data/$pentaho::repository_db_type":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/data/$pentaho::repository_db_type":
     ensure => "directory"
   }
   
   # Begin importing files to configure the BI Server EE  
-  file { "$pentaho::root_dir/biserver-ee/tomcat/webapps/pentaho/META-INF/context.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/tomcat/webapps/pentaho/META-INF/context.xml":
     ensure => "file",
     content => template("pentaho/5.3/tomcat6/webapps/pentaho/META-INF/context.xml.erb")
   }
   
-  file { "$pentaho::root_dir/biserver-ee/pentaho-solutions/system/audit_sql.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system/audit_sql.xml":
     ensure => "file",
     content => template("pentaho/5.3/pentaho-solutions/system/audit_sql.xml.erb")
   }
   
-  file { "$pentaho::root_dir/biserver-ee/pentaho-solutions/system/hibernate/hibernate-settings.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system/hibernate/hibernate-settings.xml":
     ensure => "file",
     content => template("pentaho/5.3/pentaho-solutions/system/hibernate/hibernate-settings.xml.erb")
   }
   
-  file { "$pentaho::root_dir/biserver-ee/pentaho-solutions/system/hibernate/${pentaho::repository_db_type}.hibernate.cfg.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system/hibernate/${pentaho::repository_db_type}.hibernate.cfg.xml":
     ensure => "file",
     content => template("pentaho/5.3/pentaho-solutions/system/hibernate/${pentaho::repository_db_type}.hibernate.cfg.xml.erb")
   }
   
-  file { "$pentaho::root_dir/biserver-ee/pentaho-solutions/system/jackrabbit/repository.xml":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system/jackrabbit/repository.xml":
     ensure => "file",
     content => template("pentaho/5.3/pentaho-solutions/system/jackrabbit/repository.xml.erb")
   }
 
-  file { "$pentaho::root_dir/biserver-ee/pentaho-solutions/system/quartz/quartz.properties":
+  file { "$pentaho::root_dir/$pentaho::biserver_ee_dir/pentaho-solutions/system/quartz/quartz.properties":
     ensure => "file",
     content => template("pentaho/5.3/pentaho-solutions/system/quartz/quartz.properties.erb")
   }

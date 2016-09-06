@@ -1,0 +1,25 @@
+IF  EXISTS (SELECT * FROM sys.server_principals WHERE name = N'<%= @db_jackrabbit_user %>')
+  DROP LOGIN [<%= @db_jackrabbit_user %>];
+CREATE LOGIN [<%= @db_jackrabbit_user %>] WITH PASSWORD = '<%= @db_jackrabbit_password %>', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;
+
+IF  EXISTS (SELECT * FROM sys.server_principals WHERE name = N'<%= @db_quartz_user %>')
+  DROP LOGIN [<%= @db_quartz_user %>];
+CREATE LOGIN [<%= @db_quartz_user %>] WITH PASSWORD = '<%= @db_quartz_password %>', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;
+
+IF  EXISTS (SELECT * FROM sys.server_principals WHERE name = N'<%= @db_hibernate_user %>')
+  DROP LOGIN [<%= @db_hibernate_user %>];
+CREATE LOGIN [<%= @db_hibernate_user %>] WITH PASSWORD = '<%= @db_hibernate_password %>', CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;
+
+USE [<%= @jackrabbit_db %>];
+CREATE USER [<%= @db_jackrabbit_user %>] FOR LOGIN [<%= @db_jackrabbit_user %>];
+EXEC sp_addrolemember 'db_owner', '<%= @db_jackrabbit_user %>';
+
+USE [<%= @quartz_db %>];
+CREATE USER [<%= @db_quartz_user %>] FOR LOGIN [<%= @db_quartz_user %>];
+EXEC sp_addrolemember 'db_owner', '<%= @db_quartz_user %>';
+
+USE [<%= @hibernate_db %>];
+CREATE USER [<%= @db_hibernate_user %>] FOR LOGIN [<%= @db_hibernate_user %>];
+EXEC sp_addrolemember 'db_owner', '<%= @db_hibernate_user %>';
+
+USE [<%= @liquibase_database %>];

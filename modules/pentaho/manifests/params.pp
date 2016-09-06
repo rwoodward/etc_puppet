@@ -7,6 +7,8 @@ class pentaho::params {
     $root_dir               = '/opt/pentaho'
   }
   
+  $biserver_ee_dir        = "pentaho-server"
+
   $license_installer_path = "${root_dir}/pentaho/license-installer"
   $license_files_path     = "http://10.177.176.213/engops/licenses"
 
